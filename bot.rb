@@ -4,10 +4,8 @@ require 'eventmachine'
 require 'faye/websocket'
 require './weather.rb'
 
-TOKEN = 'xoxb-872847036759-860788752641-1iYOR05PVOgZ1vhEEvsuvF8R'
-
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
-    token: TOKEN #ENV['SLACK_API_TOKEN']
+    token: ENV['SLACK_API_TOKEN']
   })
 
 rc = JSON.parse(response.body)
