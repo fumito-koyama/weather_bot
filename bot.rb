@@ -26,18 +26,18 @@ EM.run do
     data = JSON.parse(event.data)
     p [:message,data]
     next unless data['text']&.include? '天気'
-    if weathers =  Gateway::parse!(data['text']).text
-      weathers.each do |weather|
+    if weathers =  Gateway::parse!(data['text'])
+      weathers.text.each do |weather_text|
         ws.send({
           type: 'message',
-          text: weather,
+          text: weather_text,
           channel: data['channel']
           }.to_json)
       end
     else
       ws.send({
           type: 'message',
-          text: "都道府県名が確認できませんでした。\n`天気`と`都道府県名`を入れて、再度お試しください。",
+          text: "都道府県名が確認できませんでした。\n`天気`と `都道府県名`を入れて、再度お試しください。",
           channel: data['channel']
           }.to_json)
     end
