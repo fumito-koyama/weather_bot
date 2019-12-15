@@ -1,4 +1,4 @@
-#WeatherBot
+# WeatherBot
 
 使い方
 - slackでボットを作成し、チャンネルに招待

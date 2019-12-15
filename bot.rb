@@ -2,7 +2,10 @@ require 'http'
 require 'json'
 require 'eventmachine'
 require 'faye/websocket'
+require 'logger'
 require './weather.rb'
+
+logger = Logger.new('bot_api.log',3)
 
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
     token: ENV['SLACK_API_TOKEN']
@@ -19,12 +22,15 @@ EM.run do
   #  接続が確立した時の処理
   ws.on :open do
     p [:open]
+    logger.info [:open]
   end
 
   # RTM APIから情報を受け取った時の処理
   ws.on :message do |event|
     data = JSON.parse(event.data)
     p [:message,data]
+    logger.info [:message,data]
+
     next unless data['text']&.include? '天気'
     if weathers =  Gateway::parse!(data['text'])
       weathers.text.each do |weather_text|
@@ -46,6 +52,8 @@ EM.run do
   # 接続が切断した時の処理
   ws.on :close do |event|
     p [:close, event.code]
+    logger.info [:close, event.code]
+    logger.close
     ws = nil
     EM.stop
   end
