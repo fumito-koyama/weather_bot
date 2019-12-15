@@ -9,13 +9,12 @@ class Gateway
 
   class << self
 
-    #天気のjsonのコレクションをを返す
+    #天気のjsonのコレクションをを返す、空の場合nilを返す
     def parse!(text)
-      generate(text).inject(Weathers.new(text)) do |weathers,url|
+      generate(text).inject(Weathers.new(text)){ |weathers,url|
         res = Net::HTTP.get(URI.parse(url))#引数はURIインスタンスのみ
         weathers << Weather.new(JSON.parse(res))
-        weathers
-      end
+      }.check
     end
 
     private
@@ -75,6 +74,11 @@ class Gateway
 
     def <<(weather)
       @weathers << weather
+      self
+    end
+
+    def check
+      @weathers.empty? ? nil : self
     end
 
     def each 
