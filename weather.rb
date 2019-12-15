@@ -5,13 +5,11 @@ require 'net/http'
 #require 'pry'
 
 class Gateway
-  # MAEBASHI = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=100010'
-  # MINAKAMI = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=100020'
   BASE = 'http://weather.livedoor.com/forecast/webservice/json/v1?city='
-  # PREFECTURES = ["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"]
 
   class << self
 
+    #天気のjsonのコレクションをを返す
     def parse!(text)
       generate(text).inject(Weathers.new(text)) do |weathers,url|
         res = Net::HTTP.get(URI.parse(url))#引数はURIインスタンスのみ
@@ -21,17 +19,15 @@ class Gateway
     end
 
     private
-
+    #都道府県に応じたAPIのURLを作って配列で返す
     def generate(text)
       hash.inject([]){|a,(k,v)|a << (BASE+v) if text.include? k.chop; a}
-      # element = ['100010'] if element.empty?
-      # element
     end
-
+    #csvを読み込んで{'都道府県' => '都道府県ID'}ハッシュで返す
     def hash
       @prefectures ||= CSV.read(listfile).inject({}){|h,ary| h[ary[0]] = ary[1]; h}
     end
-
+    #絶対パス生成
     def listfile
       @listfile ||= File.expand_path('api_list.csv', __dir__)
     end
