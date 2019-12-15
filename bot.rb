@@ -34,6 +34,12 @@ EM.run do
           channel: data['channel']
           }.to_json)
       end
+    else
+      ws.send({
+          type: 'message',
+          text: "都道府県名が確認できませんでした。\n`天気`と`都道府県名`を入れて、再度お試しください。",
+          channel: data['channel']
+          }.to_json)
     end
   end
 
