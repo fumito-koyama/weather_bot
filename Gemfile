@@ -3,10 +3,11 @@
 source "https://rubygems.org"
 
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-ruby '2.6.4'
+ruby "2.6.4"
 
 # gem "rails"
-gem 'json'
-gem 'http'
-gem 'eventmachine'
-gem 'faye-websocket'
+gem "eventmachine"
+gem "faye-websocket"
+gem "http"
+gem "json"
+gem "onkcop", require: false

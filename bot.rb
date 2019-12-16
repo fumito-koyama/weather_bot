@@ -5,11 +5,11 @@ require 'faye/websocket'
 require 'logger'
 require './weather.rb'
 
-logger = Logger.new('bot_api.log',3)
+logger = Logger.new('bot_api.log', 3)
 
 response = HTTP.post("https://slack.com/api/rtm.start", params: {
-    token: ENV['SLACK_API_TOKEN']
-  })
+  token: ENV['SLACK_API_TOKEN']
+})
 
 rc = JSON.parse(response.body)
 
@@ -28,11 +28,11 @@ EM.run do
   # RTM APIから情報を受け取った時の処理
   ws.on :message do |event|
     data = JSON.parse(event.data)
-    p [:message,data]
-    logger.info [:message,data]
-
+    p [:message, data]
+    logger.info [:message, data]
     next unless data['text']&.include? '天気'
-    if weathers =  Gateway::parse!(data['text'])
+
+    if weathers = Gateway::parse!(data['text'])
       weathers.text.each do |weather_text|
         ws.send({
           type: 'message',
@@ -57,5 +57,4 @@ EM.run do
     ws = nil
     EM.stop
   end
-
 end
